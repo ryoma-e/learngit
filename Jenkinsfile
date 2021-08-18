@@ -50,6 +50,7 @@ pipeline {
     stage ('Ship') {
       steps {
         echo '----------Run Ship----------'
+        sh 'mvn deploy'
         echo '----------Ship Finished----------'
       }
     }
