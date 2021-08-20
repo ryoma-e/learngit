@@ -6,20 +6,21 @@ pipeline {
   environment {
     DEPLOY_PORT = '8080'
     group = 'com.tapddemo'
-    artifactId = 'demo'
+    artifactId = "${currentBuild.projectName}"
+    version = "${BUILD_NUMBER}"
   }  
   stages {
     stage ('Compile') {
       steps {
         echo '----------Run Compile----------'
-        sh 'mvn clean compile -Dversion=${BUILD_NUMBER} -DgroupId=${group} -DartifactId=${artifactId}'
+        sh 'mvn clean compile -Dversion=${version} -DgroupId=${group} -DartifactId=${artifactId}'
         echo '----------Compile Finished----------'
       }
     }
     stage ('Unit Test') {
       steps {
           echo '----------Run Unit Test----------'
-          sh 'mvn test -Dversion=${BUILD_NUMBER} -DgroupId=${group} -DartifactId=${artifactId}'
+          sh 'mvn test -Dversion=${version} -DgroupId=${group} -DartifactId=${artifactId}'
           echo '----------Unit Test Finished----------'
       }
       post {
@@ -32,7 +33,7 @@ pipeline {
       steps {
         echo '----------Run SonarQube Scan----------'
         withSonarQubeEnv(installationName: 'DevOpsSonarQube') {
-          sh 'mvn sonar:sonar -Dversion=${BUILD_NUMBER} -DgroupId=${group} -DartifactId=${artifactId}'
+          sh 'mvn sonar:sonar -Dversion=${version} -DgroupId=${group} -DartifactId=${artifactId}'
         }
         echo '----------SonarQube Scan Finished----------'
       }
@@ -40,7 +41,7 @@ pipeline {
     stage ('Package & Build') {
       steps {
         echo '----------Run Package----------'
-        sh 'mvn package -Dversion=${BUILD_NUMBER} -DgroupId=${group} -DartifactId=${artifactId}'
+        sh 'mvn package -Dversion=${version} -DgroupId=${group} -DartifactId=${artifactId}'
         echo '----------Package Finished----------'
         echo '----------Run Build----------'
 
@@ -57,7 +58,7 @@ pipeline {
     stage ('Ship') {
       steps {
         echo '----------Run Ship----------'
-        nexusPublisher nexusInstanceId: 'DevOpsNexus', nexusRepositoryId: 'maven-releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: "target/${currentBuild.projectName}-${BUILD_NUMBER}.jar"]], mavenCoordinate: [artifactId: "${currentBuild.projectName}", groupId: "${group}", packaging: 'jar', version: "${BUILD_NUMBER}"]]]        
+        nexusPublisher nexusInstanceId: 'DevOpsNexus', nexusRepositoryId: 'maven-releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: "target/${artifactId}-${version}.jar"]], mavenCoordinate: [artifactId: "${artifactId}", groupId: "${group}", packaging: 'jar', version: "${version}"]]]        
         echo '----------Ship Finished----------'
       }
     }
