@@ -57,7 +57,7 @@ pipeline {
     stage ('Ship') {
       steps {
         echo '----------Run Ship----------'
-        nexusPublisher nexusInstanceId: 'DevOpsNexus', nexusRepositoryId: 'maven-releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'target/${currentBuild.projectName}-${BUILD_NUMBER}.jar']], mavenCoordinate: [artifactId: '${currentBuild.projectName}', groupId: '${group}', packaging: 'jar', version: '${BUILD_NUMBER}']]]        
+        nexusPublisher nexusInstanceId: 'DevOpsNexus', nexusRepositoryId: 'maven-releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: "target/${currentBuild.projectName}-${BUILD_NUMBER}.jar"]], mavenCoordinate: [artifactId: "${currentBuild.projectName}", groupId: "${group}", packaging: 'jar', version: "${BUILD_NUMBER}"]]]        
         echo '----------Ship Finished----------'
       }
     }
