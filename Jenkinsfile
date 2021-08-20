@@ -5,27 +5,34 @@ pipeline {
   }  
   environment {
     DEPLOY_PORT = '8080'
+    group = 'com.tapddemo'
+    artifactId = 'demo'
   }  
   stages {
     stage ('Compile') {
       steps {
         echo '----------Run Compile----------'
-        sh 'mvn clean compile'
+        sh 'mvn clean compile -Dversion=${BUILD_NUMBER} -DgroupId=${group} -DartifactId=${artifactId}'
         echo '----------Compile Finished----------'
       }
     }
     stage ('Unit Test') {
       steps {
-        echo '----------Run Unit Test----------'
-        sh 'mvn test'
-        echo '----------Unit Test Finished----------'
+          echo '----------Run Unit Test----------'
+          sh 'mvn test -Dversion=${BUILD_NUMBER} -DgroupId=${group} -DartifactId=${artifactId}'
+          echo '----------Unit Test Finished----------'
       }
+      post {
+          always {
+              tapdTestReport frameType: 'JUnit', onlyNewModified: true, reportPath: 'target/surefire-reports/*.xml'
+          }
+      }      
     }
     stage ('SonarQube Scan') {
       steps {
         echo '----------Run SonarQube Scan----------'
         withSonarQubeEnv(installationName: 'DevOpsSonarQube') {
-          sh 'mvn sonar:sonar'
+          sh 'mvn sonar:sonar -Dversion=${BUILD_NUMBER} -DgroupId=${group} -DartifactId=${artifactId}'
         }
         echo '----------SonarQube Scan Finished----------'
       }
@@ -33,7 +40,7 @@ pipeline {
     stage ('Package & Build') {
       steps {
         echo '----------Run Package----------'
-        sh 'mvn package'
+        sh 'mvn package -Dversion=${BUILD_NUMBER} -DgroupId=${group} -DartifactId=${artifactId}'
         echo '----------Package Finished----------'
         echo '----------Run Build----------'
 
@@ -50,7 +57,7 @@ pipeline {
     stage ('Ship') {
       steps {
         echo '----------Run Ship----------'
-        sh 'mvn deploy'
+        nexusPublisher nexusInstanceId: 'DevOpsNexus', nexusRepositoryId: 'maven-releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'target/${currentBuild.projectName}-${BUILD_NUMBER}.jar']], mavenCoordinate: [artifactId: '${currentBuild.projectName}', groupId: '${group}', packaging: 'jar', version: '${BUILD_NUMBER}']]]        
         echo '----------Ship Finished----------'
       }
     }
