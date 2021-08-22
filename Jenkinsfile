@@ -46,12 +46,13 @@ pipeline {
     stage ('Package') {
       steps {
         echo '----------Run Package----------'
-        sh "mvn package -Dversion=${version} -DgroupId=${group} -DartifactId=${artifactId}"
         script{
           if (params.DeployModel == 'release') {
+            sh "mvn package -Dversion=${version} -DgroupId=${group} -DartifactId=${artifactId}"
             nexusPublisher nexusInstanceId: 'DevOpsNexus', nexusRepositoryId: 'maven-releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: "target/${artifactId}-${version}.jar"]], mavenCoordinate: [artifactId: "${artifactId}", groupId: "${group}", packaging: 'jar', version: "${version}"]]]        
           }else{
-            nexusPublisher nexusInstanceId: 'DevOpsNexus', nexusRepositoryId: 'maven-snapshots', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: "target/${artifactId}-${version}.jar"]], mavenCoordinate: [artifactId: "${artifactId}", groupId: "${group}", packaging: 'jar', version: "snapshots"]]]        
+            sh "mvn package -Dversion=snapshot -DgroupId=${group} -DartifactId=${artifactId}"
+            nexusPublisher nexusInstanceId: 'DevOpsNexus', nexusRepositoryId: 'maven-snapshots', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: "target/${artifactId}-snapshot.jar"]], mavenCoordinate: [artifactId: "${artifactId}", groupId: "${group}", packaging: 'jar', version: "snapshot"]]]        
           }
         }
         echo '----------Package Finished----------'
@@ -65,7 +66,7 @@ pipeline {
             if (params.DeployModel == 'release') {
               def customImage = docker.build("${nexusUrl}/${imageOrg}-${artifactId}:${version}", "--build-arg jarname=${artifactId}-${version}.jar .")
             }else{
-              def customImage = docker.build("${nexusUrl}/${imageOrg}-${artifactId}:snapshot", "--build-arg jarname=${artifactId}-${version}.jar .")
+              def customImage = docker.build("${nexusUrl}/${imageOrg}-${artifactId}:snapshot", "--build-arg jarname=${artifactId}-snapshot.jar .")
             }
             customImage.push()
           }
