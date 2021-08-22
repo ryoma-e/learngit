@@ -8,9 +8,8 @@ pipeline {
     group = 'com.tapddemo'
     artifactId = "${currentBuild.projectName}"
     version = "${BUILD_NUMBER}"
-    nexusUrl = 'http://193.112.147.158:7721'
+    nexusUrl = '193.112.147.158:7720'
     imageOrg = 'tapdcdapp'
-    dockerRemoteApiUrl = 'tcp://106.52.222.99:2375'
   }  
   stages {
     stage ('Compile') {
@@ -49,21 +48,11 @@ pipeline {
         echo '----------Package Finished----------'
         echo '----------Run Build----------'
         script{
-          docker.withServer("${dockerRemoteApiUrl}") {
-            docker.withRegistry("${nexusUrl}", 'DevOpsNexusPassword') {
-              def customImage = docker.build("${nexusUrl}/${imageOrg}-${artifactId}:${version}")
-              customImage.push()     
-            }                     
-          }          
-
+          docker.withRegistry("${nexusUrl}", 'DevOpsNexusPassword') {
+            def customImage = docker.build("${nexusUrl}/${imageOrg}-${artifactId}:${version}", "--build-arg jarname=${artifactId}-${version}.jar")
+            customImage.push()     
+          }
         }
-        // docker.withRegistry('https://registry.example.com', 'credentials-id') {
-
-        //     def customImage = docker.build("my-image:${env.BUILD_ID}")
-
-        //     /* Push the container to the custom Registry */
-        //     customImage.push()
-        // }        
         echo '----------Build Finished----------'
       }
     } 

@@ -1,11 +1,11 @@
 FROM maven:3-jdk-8-alpine
 
+ARG jarname
 WORKDIR /usr/src/app
 
-COPY . /usr/src/app
-
-RUN mvn package
+COPY target/${jarname} /usr/src/app
 
 ENV PORT 5000
 EXPOSE $PORT
-CMD [ "sh", "-c", "mvn -Dserver.port=${PORT} spring-boot:run" ]
+
+CMD [ "sh", "-c", "java -Dserver.port=${PORT} -jar /usr/src/app/${jarname}" ]
