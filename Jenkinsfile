@@ -51,7 +51,7 @@ pipeline {
             sh "mvn package -Dversion=${version} -DgroupId=${group} -DartifactId=${artifactId}"
             nexusPublisher nexusInstanceId: 'DevOpsNexus', nexusRepositoryId: 'maven-releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: "target/${artifactId}-${version}.jar"]], mavenCoordinate: [artifactId: "${artifactId}", groupId: "${group}", packaging: 'jar', version: "${version}"]]]        
           }else{
-            sh "mvn package -Dversion=0.0.1-SNAPSHOT -DgroupId=${group} -DartifactId=${artifactId}"
+            sh "mvn clean package -Dversion=0.0.1-SNAPSHOT -DgroupId=${group} -DartifactId=${artifactId}"
             nexusPublisher nexusInstanceId: 'DevOpsNexus', nexusRepositoryId: 'maven-snapshots', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: "target/${artifactId}-0.0.1-SNAPSHOT.jar"]], mavenCoordinate: [artifactId: "${artifactId}", groupId: "${group}", packaging: 'jar', version: "0.0.1-SNAPSHOT"]]]        
           }
         }
