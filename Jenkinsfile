@@ -48,7 +48,7 @@ pipeline {
         echo '----------Package Finished----------'
         echo '----------Run Build----------'
         script{
-          docker.withRegistry("${nexusUrl}", 'DevOpsNexusPassword') {
+          docker.withRegistry("http://193.112.147.158:7720", 'DevOpsNexusPassword') {
             def customImage = docker.build("${nexusUrl}/${imageOrg}-${artifactId}:${version}", "--build-arg jarname=${artifactId}-${version}.jar")
             customImage.push()     
           }
