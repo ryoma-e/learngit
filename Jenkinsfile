@@ -51,8 +51,8 @@ pipeline {
             sh "mvn package -Dversion=${version} -DgroupId=${group} -DartifactId=${artifactId}"
             nexusPublisher nexusInstanceId: 'DevOpsNexus', nexusRepositoryId: 'maven-releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: "target/${artifactId}-${version}.jar"]], mavenCoordinate: [artifactId: "${artifactId}", groupId: "${group}", packaging: 'jar', version: "${version}"]]]        
           }else{
-            sh "mvn clean package -Dversion=0.0.1-SNAPSHOT -DgroupId=${group} -DartifactId=${artifactId}"
-            nexusPublisher nexusInstanceId: 'DevOpsNexus', nexusRepositoryId: 'maven-snapshots', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: "target/${artifactId}-0.0.1-SNAPSHOT.jar"]], mavenCoordinate: [artifactId: "${artifactId}", groupId: "${group}", packaging: 'jar', version: "0.0.1-SNAPSHOT"]]]        
+            sh "mvn package -Dversion=snapshot -DgroupId=${group} -DartifactId=${artifactId}"
+            nexusPublisher nexusInstanceId: 'DevOpsNexus', nexusRepositoryId: 'maven-snapshot', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: "target/${artifactId}-snapshot.jar"]], mavenCoordinate: [artifactId: "${artifactId}", groupId: "${group}", packaging: 'jar', version: "snapshot"]]]        
           }
         }
         echo '----------Package Finished----------'
@@ -67,7 +67,7 @@ pipeline {
               def customImage = docker.build("${nexusUrl}/${imageOrg}-${artifactId}:${version}", "--build-arg jarname=${artifactId}-${version}.jar .")
               customImage.push()
             }else{
-              def customImage = docker.build("${nexusUrl}/${imageOrg}-${artifactId}:snapshot", "--build-arg jarname=${artifactId}-0.0.1-SNAPSHOT.jar .")
+              def customImage = docker.build("${nexusUrl}/${imageOrg}-${artifactId}:snapshot", "--build-arg jarname=${artifactId}-snapshot.jar .")
               customImage.push()
             }
           }
