@@ -4,23 +4,26 @@ pipeline {
     label 'maven'
   }  
   environment {
-    DEPLOY_PORT = '8080'
+    deployPort = '8080'
     group = 'com.tapddemo'
     artifactId = "${currentBuild.projectName}"
     version = "${BUILD_NUMBER}"
+    nexusUrl = 'http://193.112.147.158:7721'
+    imageOrg = 'tapdcdapp'
+    dockerRemoteApiUrl = 'tcp://106.52.222.99:2375'
   }  
   stages {
     stage ('Compile') {
       steps {
         echo '----------Run Compile----------'
-        sh 'mvn clean compile -Dversion=${version} -DgroupId=${group} -DartifactId=${artifactId}'
+        sh "mvn clean compile -Dversion=${version} -DgroupId=${group} -DartifactId=${artifactId}"
         echo '----------Compile Finished----------'
       }
     }
     stage ('Unit Test') {
       steps {
           echo '----------Run Unit Test----------'
-          sh 'mvn test -Dversion=${version} -DgroupId=${group} -DartifactId=${artifactId}'
+          sh "mvn test -Dversion=${version} -DgroupId=${group} -DartifactId=${artifactId}"
           echo '----------Unit Test Finished----------'
       }
       post {
@@ -33,7 +36,7 @@ pipeline {
       steps {
         echo '----------Run SonarQube Scan----------'
         withSonarQubeEnv(installationName: 'DevOpsSonarQube') {
-          sh 'mvn sonar:sonar -Dversion=${version} -DgroupId=${group} -DartifactId=${artifactId}'
+          sh "mvn sonar:sonar -Dversion=${version} -DgroupId=${group} -DartifactId=${artifactId}"
         }
         echo '----------SonarQube Scan Finished----------'
       }
@@ -41,10 +44,19 @@ pipeline {
     stage ('Package & Build') {
       steps {
         echo '----------Run Package----------'
-        sh 'mvn package -Dversion=${version} -DgroupId=${group} -DartifactId=${artifactId}'
+        sh "mvn package -Dversion=${version} -DgroupId=${group} -DartifactId=${artifactId}"
+        nexusPublisher nexusInstanceId: 'DevOpsNexus', nexusRepositoryId: 'maven-releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: "target/${artifactId}-${version}.jar"]], mavenCoordinate: [artifactId: "${artifactId}", groupId: "${group}", packaging: 'jar', version: "${version}"]]]        
         echo '----------Package Finished----------'
         echo '----------Run Build----------'
+        script{
+          docker.withServer("${dockerRemoteApiUrl}") {
+            docker.withRegistry("${nexusUrl}", 'DevOpsNexusPassword') {
+              def customImage = docker.build("${nexusUrl}/${imageOrg}-${artifactId}:${version}")
+              customImage.push()     
+            }                     
+          }          
 
+        }
         // docker.withRegistry('https://registry.example.com', 'credentials-id') {
 
         //     def customImage = docker.build("my-image:${env.BUILD_ID}")
@@ -58,7 +70,6 @@ pipeline {
     stage ('Ship') {
       steps {
         echo '----------Run Ship----------'
-        nexusPublisher nexusInstanceId: 'DevOpsNexus', nexusRepositoryId: 'maven-releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: "target/${artifactId}-${version}.jar"]], mavenCoordinate: [artifactId: "${artifactId}", groupId: "${group}", packaging: 'jar', version: "${version}"]]]        
         echo '----------Ship Finished----------'
       }
     }
