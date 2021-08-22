@@ -4,7 +4,7 @@ pipeline {
     label 'maven'
   }
   parameters {
-    choice choices: ['snapshot', 'release'], description: '部署模式', name: 'deploy-model'
+    choice choices: ['snapshot', 'release'], description: 'deploy model', name: 'DeployModel'
   } 
   environment {
     deployPort = '8080'
@@ -48,7 +48,7 @@ pipeline {
         echo '----------Run Package----------'
         sh "mvn package -Dversion=${version} -DgroupId=${group} -DartifactId=${artifactId}"
         script{
-          if (params.deploy-model == 'release') {
+          if (params.DeployModel == 'release') {
             nexusPublisher nexusInstanceId: 'DevOpsNexus', nexusRepositoryId: 'maven-releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: "target/${artifactId}-${version}.jar"]], mavenCoordinate: [artifactId: "${artifactId}", groupId: "${group}", packaging: 'jar', version: "${version}"]]]        
           }else{
             nexusPublisher nexusInstanceId: 'DevOpsNexus', nexusRepositoryId: 'maven-snapshots', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: "target/${artifactId}-${version}.jar"]], mavenCoordinate: [artifactId: "${artifactId}", groupId: "${group}", packaging: 'jar', version: "snapshots"]]]        
@@ -62,7 +62,7 @@ pipeline {
         echo '----------Run Ship----------'
         script{
           docker.withRegistry("http://${nexusUrl}", 'DevOpsNexusPassword') {
-            if (params.deploy-model == 'release') {
+            if (params.DeployModel == 'release') {
               def customImage = docker.build("${nexusUrl}/${imageOrg}-${artifactId}:${version}", "--build-arg jarname=${artifactId}-${version}.jar .")
             }else{
               def customImage = docker.build("${nexusUrl}/${imageOrg}-${artifactId}:snapshot", "--build-arg jarname=${artifactId}-${version}.jar .")
