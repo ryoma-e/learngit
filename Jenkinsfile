@@ -91,7 +91,12 @@ pipeline {
               }else{
                 sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} docker rm -f ${artifactId}-snapshot"
                 sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} docker run -d --pull always --name ${artifactId}-snapshot  -p ${deployPort}:${exposePort} ${nexusPullUrl}/${imageOrg}-${artifactId}:snapshot"
-              }              
+              }
+              sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} rm /etc/nginx/conf.d/${artifactId}-test.conf"
+              sh "sed -i 's/SERVER_NAME/test.${artifactId}.tapd.cn/g' nginx.conf"
+              sh "sed -i 's/PROXY_PORT/${deployPort}/g' nginx.conf"
+              sh "scp -o StrictHostKeyChecking=no nginx.conf jenkins@${cdMachineHost}:/etc/nginx/conf.d/${artifactId}-test.conf"
+              sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} nginx -s reload"
             }          
           }
         }
