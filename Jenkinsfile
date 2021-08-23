@@ -8,10 +8,12 @@ pipeline {
   } 
   environment {
     deployPort = '8080'
+    exposePort = '5000'
     group = 'com.tapddemo'
     artifactId = "${currentBuild.projectName}"
     version = "${BUILD_NUMBER}"
-    nexusUrl = '193.112.147.158:7720'
+    nexusPushUrl = '193.112.147.158:7720'
+    nexusPullUrl = '193.112.147.158:7721'
     cdMachineHost = '1.14.181.160'
     imageOrg = 'tapdcdapp'
   }  
@@ -63,12 +65,12 @@ pipeline {
       steps {
         echo '----------Run Ship----------'
         script{
-          docker.withRegistry("http://${nexusUrl}", 'DevOpsNexusPassword') {
+          docker.withRegistry("http://${nexusPushUrl}", 'DevOpsNexusPassword') {
             if (params.DeployModel == 'release') {
-              def customImage = docker.build("${nexusUrl}/${imageOrg}-${artifactId}:${version}", "--build-arg jarname=${artifactId}-${version}.jar .")
+              def customImage = docker.build("${nexusPushUrl}/${imageOrg}-${artifactId}:${version}", "--build-arg jarname=${artifactId}-${version}.jar .")
               customImage.push()
             }else{
-              def customImage = docker.build("${nexusUrl}/${imageOrg}-${artifactId}:snapshot", "--build-arg jarname=${artifactId}-snapshot.jar .")
+              def customImage = docker.build("${nexusPushUrl}/${imageOrg}-${artifactId}:snapshot", "--build-arg jarname=${artifactId}-snapshot.jar .")
               customImage.push()
             }
           }
@@ -79,8 +81,19 @@ pipeline {
     stage ('Deploy') {
       steps {
         echo '----------Run Deploy----------'
-        sshagent (credentials: ['CD-Machine-SSH-Credential']) {
-          sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} docker info"
+        script{
+          withCredentials([usernamePassword(credentialsId: 'DevOpsNexusPassword', passwordVariable: 'NEXUS_PASSWD', usernameVariable: 'NEXUS_USER')]) {
+            sshagent (credentials: ['CD-Machine-SSH-Credential']) {
+              sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} docker login -u $NEXUS_USER -p $NEXUS_PASSWD ${nexusPullUrl}"
+              if (params.DeployModel == 'release') {
+                sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} docker rm -f ${artifactId}-release"
+                sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} docker run -d --pull always --name ${artifactId}-release -p ${deployPort}:${exposePort} ${nexusPullUrl}/${imageOrg}-${artifactId}:${version}"
+              }else{
+                sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} docker rm -f ${artifactId}-snapshot"
+                sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} docker run -d --pull always --name ${artifactId}-snapshot  -p ${deployPort}:${exposePort} ${nexusPullUrl}/${imageOrg}-${artifactId}:snapshot"
+              }              
+            }          
+          }
         }
         echo '----------Deploy Finished----------'
       }
