@@ -12,6 +12,7 @@ pipeline {
     artifactId = "${currentBuild.projectName}"
     version = "${BUILD_NUMBER}"
     nexusUrl = '193.112.147.158:7720'
+    cdMachineHost = '1.14.181.160'
     imageOrg = 'tapdcdapp'
   }  
   stages {
@@ -78,6 +79,9 @@ pipeline {
     stage ('Deploy') {
       steps {
         echo '----------Run Deploy----------'
+        sshagent (credentials: ['CD-Machine-SSH-Credential']) {
+          sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} docker info"
+        }
         echo '----------Deploy Finished----------'
       }
     }         
