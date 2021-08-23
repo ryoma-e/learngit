@@ -7,7 +7,6 @@ pipeline {
     choice choices: ['snapshot', 'release'], description: 'deploy model', name: 'DeployModel'
   } 
   environment {
-    deployPort = '8080'
     exposePort = '5000'
     group = 'com.tapddemo'
     artifactId = "${currentBuild.projectName}"
@@ -84,6 +83,7 @@ pipeline {
         script{
           withCredentials([usernamePassword(credentialsId: 'DevOpsNexusPassword', passwordVariable: 'NEXUS_PASSWD', usernameVariable: 'NEXUS_USER')]) {
             sshagent (credentials: ['CD-Machine-SSH-Credential']) {
+              def deployPort = sh(script: 'ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} ./get_port.sh', returnStdout: true)
               sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} docker login -u $NEXUS_USER -p $NEXUS_PASSWD ${nexusPullUrl}"
               if (params.DeployModel == 'release') {
                 sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} docker rm -f ${artifactId}-release"
@@ -93,7 +93,7 @@ pipeline {
                 sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} docker run -d --pull always --name ${artifactId}-snapshot  -p ${deployPort}:${exposePort} ${nexusPullUrl}/${imageOrg}-${artifactId}:snapshot"
               }
               sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} rm /etc/nginx/conf.d/${artifactId}-test.conf"
-              sh "sed -i 's/SERVER_NAME/test.${artifactId}.tapd.cn/g' nginx.conf"
+              sh "sed -i 's/SERVER_NAME/${artifactId}.test.devops-app.tapd.cn/g' nginx.conf"
               sh "sed -i 's/PROXY_PORT/${deployPort}/g' nginx.conf"
               sh "scp -o StrictHostKeyChecking=no nginx.conf jenkins@${cdMachineHost}:/etc/nginx/conf.d/${artifactId}-test.conf"
               sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} nginx -s reload"
