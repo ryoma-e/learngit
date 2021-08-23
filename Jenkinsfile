@@ -95,7 +95,7 @@ pipeline {
               sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} rm -f /etc/nginx/conf.d/${artifactId}-test.conf"
               sh "sed -i 's/SERVER_NAME/${artifactId}.test.devops-app.tapd.cn/g' nginx.conf"
               sh "sed -i 's/PROXY_PORT/${deployPort}/g' nginx.conf"
-              sh "scp -o StrictHostKeyChecking=no nginx.conf jenkins@${cdMachineHost}:/etc/nginx/conf.d/${artifactId}-test.conf"
+              sh "scp -o StrictHostKeyChecking=no -p 36000 nginx.conf jenkins@${cdMachineHost}:/etc/nginx/conf.d/${artifactId}-test.conf"
               sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} nginx -s reload"
             }          
           }
