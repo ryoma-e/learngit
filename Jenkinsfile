@@ -96,12 +96,12 @@ pipeline {
               sh "sed -i 's/SERVER_NAME/${artifactId}.test.devops-app.tapd.cn/g' nginx.conf"
               sh "sed -i 's/PROXY_PORT/${deployPort}/g' nginx.conf"
               sh "scp -o StrictHostKeyChecking=no -P 36000 nginx.conf jenkins@${cdMachineHost}:/etc/nginx/conf.d/${artifactId}-test.conf"
-              sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} ./usr/sbin/nginx -s reload"
-            }          
+              sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} /usr/sbin/nginx -s reload"
+            }
           }
         }
         echo '----------Deploy Finished----------'
       }
-    }         
+    }
   }
 }
