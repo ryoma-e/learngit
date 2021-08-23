@@ -5,6 +5,7 @@ WORKDIR /usr/src/app
 
 COPY target/${jarname} /usr/src/app
 
+ENV jarname ${jarname}
 ENV PORT 5000
 EXPOSE $PORT
 
