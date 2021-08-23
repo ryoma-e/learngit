@@ -83,7 +83,7 @@ pipeline {
         script{
           withCredentials([usernamePassword(credentialsId: 'DevOpsNexusPassword', passwordVariable: 'NEXUS_PASSWD', usernameVariable: 'NEXUS_USER')]) {
             sshagent (credentials: ['CD-Machine-SSH-Credential']) {
-              def deployPort = sh(script: "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} ./get_port.sh", returnStdout: true)
+              def deployPort = sh(script: "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} ./get_port.sh", returnStdout: true).trim()
               sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} docker login -u $NEXUS_USER -p $NEXUS_PASSWD ${nexusPullUrl}"
               if (params.DeployModel == 'release') {
                 sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} docker rm -f ${artifactId}-release"
