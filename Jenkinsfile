@@ -90,10 +90,9 @@ pipeline {
                 sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} docker run -d --pull always --name ${artifactId}-release -p ${deployPort}:${exposePort} ${nexusPullUrl}/${imageOrg}-${artifactId}:${version}"
               }else{
                 sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} docker rm -f ${artifactId}-snapshot"
-                echo "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} docker run -d --pull always --name ${artifactId}-snapshot  -p ${deployPort}:${exposePort} ${nexusPullUrl}/${imageOrg}-${artifactId}:snapshot"
                 sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} docker run -d --pull always --name ${artifactId}-snapshot  -p ${deployPort}:${exposePort} ${nexusPullUrl}/${imageOrg}-${artifactId}:snapshot"
               }
-              sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} rm /etc/nginx/conf.d/${artifactId}-test.conf"
+              sh "ssh -o StrictHostKeyChecking=no -p 36000 -l jenkins ${cdMachineHost} rm -f /etc/nginx/conf.d/${artifactId}-test.conf"
               sh "sed -i 's/SERVER_NAME/${artifactId}.test.devops-app.tapd.cn/g' nginx.conf"
               sh "sed -i 's/PROXY_PORT/${deployPort}/g' nginx.conf"
               sh "scp -o StrictHostKeyChecking=no nginx.conf jenkins@${cdMachineHost}:/etc/nginx/conf.d/${artifactId}-test.conf"
