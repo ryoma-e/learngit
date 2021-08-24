@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>GROUP_ID</groupId>
-	<artifactId>ARTIFACT_ID</artifactId>
-	<version>VERSION</version>
+	<groupId>${group_id}</groupId>
+	<artifactId>${artifact_id}</artifactId>
+	<version>${version}</version>
 	<packaging>jar</packaging>
 
-	<name>ARTIFACT_ID</name>
+	<name>${artifact_id}</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>
