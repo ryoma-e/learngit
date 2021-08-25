@@ -8,7 +8,7 @@
 	<version>${version}</version>
 	<packaging>jar</packaging>
 
-	<name>${artifact_id}</name>
+	<name>${artifactId}</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>

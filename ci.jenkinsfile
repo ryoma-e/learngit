@@ -7,7 +7,6 @@ pipeline {
     choice choices: ['snapshot', 'release'], description: 'deploy model', name: 'DeployModel'
   } 
   environment {
-    exposePort = '5000'
     imageOrg = 'tapddemo'
     group = 'com.tapddemo'
     artifactId = "tapd-demo-artifact"
@@ -16,6 +15,7 @@ pipeline {
     nexusPullUrl = '193.112.147.158:7721'
     cdMachineHost = '1.14.181.160'
     sshPort = '36000'
+    exposePort = '5000'
   }  
   stages {
     stage ('Compile') {
