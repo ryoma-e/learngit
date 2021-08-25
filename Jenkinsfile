@@ -9,12 +9,12 @@ pipeline {
   environment {
     exposePort = '5000'
     group = 'com.tapddemo'
-    artifactId = "${currentBuild.projectName}"
+    artifactId = "tapd-demo-artifact"
     version = "${BUILD_NUMBER}"
     nexusPushUrl = '193.112.147.158:7720'
     nexusPullUrl = '193.112.147.158:7721'
     cdMachineHost = '1.14.181.160'
-    imageOrg = 'tapdcdapp'
+    imageOrg = 'tapddemo'
   }  
   stages {
     stage ('Compile') {
