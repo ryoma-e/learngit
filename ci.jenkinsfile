@@ -11,9 +11,10 @@ pipeline {
     group = 'com.tapddemo'
     artifactId = "tapd-demo-artifact"
     version = "${BUILD_NUMBER}"
-    nexusPushUrl = '193.112.147.158:7720'
-    nexusPullUrl = '193.112.147.158:7721'
-    cdMachineHost = '1.14.181.160'
+    nexusPushUrl = credentials('Nexus-Docker-Push-URL-Credential')
+    nexusPullUrl = credentials('Nexus-Docker-Pull-URL-Credential')
+    cdMachineHost = credentials('CD-Machine-Host-Credential')
+    cdDomainName = credentials('CD-Domain-Name-Credential')
     sshPort = '36000'
     exposePort = '5000'
   }  
@@ -94,7 +95,7 @@ pipeline {
                 sh "ssh -o StrictHostKeyChecking=no -p ${sshPort} -l jenkins ${cdMachineHost} docker run -d --pull always --name ${artifactId}-test-snapshot  -p ${deployPort}:${exposePort} ${nexusPullUrl}/${imageOrg}-${artifactId}:snapshot"
               }
               sh "ssh -o StrictHostKeyChecking=no -p ${sshPort} -l jenkins ${cdMachineHost} rm -f /etc/nginx/conf.d/${artifactId}-test.conf"
-              sh "sed -i 's/SERVER_NAME/${artifactId}.test.devops-app.tapd.cn/g' nginx.conf"
+              sh "sed -i 's/SERVER_NAME/${artifactId}.test.${cdDomainName}/g' nginx.conf"
               sh "sed -i 's/PROXY_PORT/${deployPort}/g' nginx.conf"
               sh "scp -o StrictHostKeyChecking=no -P ${sshPort} nginx.conf jenkins@${cdMachineHost}:/etc/nginx/conf.d/${artifactId}-test.conf"
               sh "ssh -o StrictHostKeyChecking=no -p ${sshPort} -l jenkins ${cdMachineHost} /usr/sbin/nginx -s reload"
