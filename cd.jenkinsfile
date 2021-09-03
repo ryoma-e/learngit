@@ -10,8 +10,8 @@ pipeline {
   environment {
     imageOrg = 'tapddemo'
     group = 'com.tapddemo'
-    artifactId = 'tapd-demo-artifact'
-    version = '$params.DeployVersion'
+    artifactId = "tapd-demo-artifact"
+    version = "${params.DeployVersion}"
     nexusPullUrl = credentials('Nexus-Docker-Pull-URL-Credential')
     cdMachineHost = credentials('CD-Machine-Host-Credential')
     cdDomainName = credentials('CD-Domain-Name-Credential')
@@ -25,20 +25,20 @@ pipeline {
         script{
           withCredentials([usernamePassword(credentialsId: 'DevOpsNexusPassword', passwordVariable: 'NEXUS_PASSWD', usernameVariable: 'NEXUS_USER')]) {
             sshagent (credentials: ['CD-Machine-SSH-Credential']) {
-              def deployPort = sh(script: 'ssh -o StrictHostKeyChecking=no -p $sshPort -l jenkins $cdMachineHost ./get_port.sh', returnStdout: true).trim()
-              sh 'ssh -o StrictHostKeyChecking=no -p $sshPort -l jenkins $cdMachineHost docker login -u $NEXUS_USER -p $NEXUS_PASSWD $nexusPullUrl'
-              sh 'ssh -o StrictHostKeyChecking=no -p $sshPort -l jenkins $cdMachineHost docker rm -f $artifactId-prod-release'
-              sh 'ssh -o StrictHostKeyChecking=no -p $sshPort -l jenkins $cdMachineHost docker rm -f $artifactId-prod-snapshot'              
+              def deployPort = sh(script: "ssh -o StrictHostKeyChecking=no -p ${sshPort} -l jenkins ${cdMachineHost} ./get_port.sh", returnStdout: true).trim()
+              sh "ssh -o StrictHostKeyChecking=no -p ${sshPort} -l jenkins ${cdMachineHost} docker login -u $NEXUS_USER -p $NEXUS_PASSWD ${nexusPullUrl}"
+              sh "ssh -o StrictHostKeyChecking=no -p ${sshPort} -l jenkins ${cdMachineHost} docker rm -f ${artifactId}-prod-release"
+              sh "ssh -o StrictHostKeyChecking=no -p ${sshPort} -l jenkins ${cdMachineHost} docker rm -f ${artifactId}-prod-snapshot"              
               if (params.DeployModel == 'release') {
-                sh 'ssh -o StrictHostKeyChecking=no -p $sshPort -l jenkins $cdMachineHost docker run -d --pull always --name $artifactId-prod-release -p $deployPort:$exposePort $nexusPullUrl/$imageOrg-$artifactId:$version'
+                sh "ssh -o StrictHostKeyChecking=no -p ${sshPort} -l jenkins ${cdMachineHost} docker run -d --pull always --name ${artifactId}-prod-release -p ${deployPort}:${exposePort} ${nexusPullUrl}/${imageOrg}-${artifactId}:${version}"
               }else{
-                sh 'ssh -o StrictHostKeyChecking=no -p $sshPort -l jenkins $cdMachineHost docker run -d --pull always --name $artifactId-prod-snapshot  -p $deployPort:$exposePort $nexusPullUrl/$imageOrg-$artifactId:snapshot'
+                sh "ssh -o StrictHostKeyChecking=no -p ${sshPort} -l jenkins ${cdMachineHost} docker run -d --pull always --name ${artifactId}-prod-snapshot  -p ${deployPort}:${exposePort} ${nexusPullUrl}/${imageOrg}-${artifactId}:snapshot"
               }
-              sh 'ssh -o StrictHostKeyChecking=no -p $sshPort -l jenkins $cdMachineHost rm -f /etc/nginx/conf.d/$artifactId-prod.conf'
-              sh 'sed -i "s/SERVER_NAME/$artifactId.$cdDomainName/g" nginx.conf'
-              sh 'sed -i "s/PROXY_PORT/$deployPort/g" nginx.conf'
-              sh 'scp -o StrictHostKeyChecking=no -P $sshPort nginx.conf jenkins@$cdMachineHost:/etc/nginx/conf.d/$artifactId-prod.conf'
-              sh 'ssh -o StrictHostKeyChecking=no -p $sshPort -l jenkins $cdMachineHost /usr/sbin/nginx -s reload'
+              sh "ssh -o StrictHostKeyChecking=no -p ${sshPort} -l jenkins ${cdMachineHost} rm -f /etc/nginx/conf.d/${artifactId}-prod.conf"
+              sh "sed -i 's/SERVER_NAME/${artifactId}.${cdDomainName}/g' nginx.conf"
+              sh "sed -i 's/PROXY_PORT/${deployPort}/g' nginx.conf"
+              sh "scp -o StrictHostKeyChecking=no -P ${sshPort} nginx.conf jenkins@${cdMachineHost}:/etc/nginx/conf.d/${artifactId}-prod.conf"
+              sh "ssh -o StrictHostKeyChecking=no -p ${sshPort} -l jenkins ${cdMachineHost} /usr/sbin/nginx -s reload"
             }
           }
         }
