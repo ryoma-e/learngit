@@ -120,58 +120,14 @@ maven是 Apache软件基金会组织维护的一款自动化 构建工具，专�
 
 ![image-20210829162549602](src/etc/images/MAVEN_3.png)
 
-## 4、hello-world-web-demo
+## 4、spring-web-demo
 
-到此为止，我们已经完成了所有的环境准备，接下来写一个简单的hello-world测试一下。
+到此为止，我们已经完成了所有的环境准备，接下来导入我们的模板项目。
 
-### 4.1 创建一个SpringBoot项目
-
-![image-20210829163258976](src/etc/images/DEMO_1.png)
-
-选择 Spring Initializr->选择sdk以及default 更改Group,Artifact,java Version,package
-
-![image-20210829163423573](src/etc/images/DEMO_2.png)
-
-选择SpringBoot版本->起步依赖选择Spring Web
-
-![image-20210829163615404](src/etc/images/DEMO_3.png)
-
-### 4.2 hello world小程序
-
-右键helloworld文件夹下创建一个Controller包，并在Controller包中创建一个HelloController 类如下
-
-![image-20210829165127799](src/etc/images/DEMO_4.png)
-
-输入如下代码
-
-```java
-package com.demo.helloworld.Controller;
-
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-public class HelloController {
-
-    @RequestMapping("/hello")
-    public String test(){
-        return "Hello World!";
-    }
-
-}
-
+依次点击 File->New->Project from Version control
+![img.png](src/etc/images/DEMO_1.png)
+输入以下URL
 ```
-
-### 4.3 启动服务
-
-右键HelloWorldApplication主类并启动
-
-![image-20210829165301890](src/etc/images/DEMO_5.png)
-
-控制台看到如下输出，服务成功启动
-
-![image-20210829165439621](src/etc/images/DEMO_6.png)
-
-打开浏览器，输入 http://localhost:8080/hello，看到如下结果，试验成功。
-
-![image-20210829165602189](src/etc/images/DEMO_7.png)
+https://gitlab.tapd.cn/javierjin/spring-web-demo.git
+```
+点击clone即可看到项目成功导入。
