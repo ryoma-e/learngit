@@ -1,0 +1,12 @@
+spring:
+	datasource:
+		driver-class-name: com.mysql.jdbc.Driver
+		url: jdbc:mysql://127.0.0.1:3306/students?characterEncoding=utf8&useSSL=false
+		username: root  //填写用户名
+		password: 123456 //填写密码
+
+mybatis:
+	mapper-locations: classpath:mapper/*.xml
+	#开启驼峰命名
+	configuration:
+		map-underscore-to-camel-case: true
