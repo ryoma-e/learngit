@@ -344,3 +344,34 @@ public class DemoApplication {
 > <mapper namespace="com.example.demo.mapper.UserMapper"> 要与UserMapper类路径一模一样
 >
 > <resultMap id="BaseResultMap" type="com.example.demo.entity.User">要与User类路径一模一样
+
+## 5、代理配置
+
+接下来介绍一下 http://gitlab.tapd.cn 的代理配置方法
+
+### 5.1 代理配置
+
+打开网络和Internet设置，按照下图所示步骤操作，即可访问http://gitlab.tapd.cn
+
+![image-20210916192246964](etc/images/AGENCY_1.png)
+
+设置完成后即可访问 https://gitlab.tapd.cn/javierjin/spring-web-demo
+
+### 5.2 代码提交
+
+提交代码时还需要在终端设置代理，操作流程如下：
+
+```
+//使用HTTPS：在终端执行下列指令
+git config —global http.http://gitlab.tapd.cn.proxy "http://106.52.214.51:21869"
+git config —global http.https://gitlab.tapd.cn.proxy "https://106.52.214.51:21869"
+//使用SSH：在此地址(~/.ssh/config)的文件添加如下信息(没有就新建)
+Host gitlab.tapd.cn
+    HostName gitlab.tapd.cn
+    User git
+    Port 22
+    IdentityFile ~/.ssh/javier-id_rsa
+    ProxyCommand nc -X connect -x 106.52.214.51:21869 %h %p
+```
+
+然后按照git使用方式提交代码即可。
