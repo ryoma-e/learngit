@@ -8,9 +8,9 @@ pipeline {
     string defaultValue: 'snapshot', description: 'deploy version', name: 'DeployVersion', trim: true
   }
   environment {
-    imageOrg = 'tapddemo'
-    group = 'com.tapddemo'
-    artifactId = "tapd-demo-artifact"
+    imageOrg = 'company21929541'
+    group = 'com.company21929541'
+    artifactId = "shopingmall"
     version = "${params.DeployVersion}"
     nexusPullUrl = credentials('Nexus-Docker-Pull-URL-Credential')
     cdMachineHost = credentials('CD-Machine-Host-Credential')

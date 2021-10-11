@@ -7,9 +7,9 @@ pipeline {
     choice choices: ['snapshot', 'release'], description: 'deploy model', name: 'DeployModel'
   } 
   environment {
-    imageOrg = 'tapddemo'
-    group = 'com.tapddemo'
-    artifactId = "tapd-demo-artifact"
+    imageOrg = 'company21929541'
+    group = 'com.company21929541'
+    artifactId = "shopingmall"
     version = "${BUILD_NUMBER}"
     nexusPushUrl = credentials('Nexus-Docker-Push-URL-Credential')
     nexusPullUrl = credentials('Nexus-Docker-Pull-URL-Credential')
