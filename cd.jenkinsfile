@@ -14,7 +14,7 @@ pipeline {
     version = "${params.DeployVersion}"
     nexusPullUrl = credentials('Nexus-Docker-Pull-URL-Credential')
     cdMachineHost = credentials('CD-Machine-Host-Credential')
-    cdDomainName = "devops-app.tapd.cn"
+    cdDomainName = "app.tapd-devops.cn"
     sshPort = '36000'
     exposePort = '5000'
   }
