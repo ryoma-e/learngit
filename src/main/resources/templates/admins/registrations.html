@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>管理员仪表盘</title>
+
+  <!-- Bootstrap CSS CDN -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+        integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+  <!-- Our Custom CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- Font Awesome JS -->
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
+          integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
+          crossorigin="anonymous"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
+          integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
+          crossorigin="anonymous"></script>
+</head>
+
+<body>
+<div class="wrapper">
+  <!-- Sidebar  -->
+  <nav id="sidebar">
+    <div class="sidebar-header">
+      <table>
+        <thead>
+        <tr>
+          <th><img src="/img/default.png" alt="userHead" id="userHead"></th>
+          <th>
+            <h5>userName</h5>
+          </th>
+        </tr>
+        </thead>
+      </table>
+    </div>
+
+    <ul class="list-unstyled components">
+      <li>
+        <a href="/admin/consoles">仪表盘首页</a>
+      </li>
+      <li>
+        <a href="/admin/users">用户列表</a>
+      </li>
+      <li>
+        <a href="/admin/users/registrations">用户注册审核</a>
+      </li>
+      <li>
+        <a href="#">闲置物品列表</a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Page Content  -->
+  <div id="content">
+
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>uid</th>
+        <th>用户昵称</th>
+        <th>姓名</th>
+        <th>校园卡号</th>
+        <th>手机号码</th>
+        <th>注册时间</th>
+        <th>账号状态</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="user: ${registrations}">
+        <td th:text="${user.uid}"></td>
+        <td th:text="${user.nickname}"></td>
+        <td th:text="${user.userName}"></td>
+        <td th:text="${user.schoolCardID}"></td>
+        <td th:text="${user.phoneNo}"></td>
+        <td th:text="${user.registerTime}"></td>
+        <td th:text="${user.accountStatus}"></td>
+        <td><a th:href="@{~/admin/users/registrations/{uid}/info(uid=${user.uid})}" style="color: blue;">审核</a></td>
+      </tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- jQuery CDN - Slim version (=without AJAX) -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<!-- Popper.JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+        integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+        crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
+        integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

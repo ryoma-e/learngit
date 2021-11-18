@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+
+  <title>查找闲置物品</title>
+  <!-- <link type="text/css" rel="stylesheet" href="../idleItem/idleItem.css"> -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"
+          integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
+          crossorigin="anonymous"></script>
+  <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+          integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
+          crossorigin="anonymous"></script>
+</head>
+
+<body>
+<div class="container">
+  <!-- nav -->
+  <nav>
+    <div class="container-fluid" style="width: 80%; margin: 0 auto;">
+      <div class="navbar-header col-sm-2">
+        <img src="img/default.png" alt="Brand">
+      </div>
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">首页</a></li>
+        <li><a href="#">闲置物品</a></li>
+        <li><a href="#">图书租借</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/user/login">登录</a></li>
+        <li><a href="/user/register">注册</a></li>
+      </ul>
+    </div>
+  </nav>
+  <!-- search -->
+  <div class="container-fluid" style="width: 80%; margin: 0 auto;">
+    <div class="dropdown col-lg-2">
+      <button class="btn btn-default dropdown-toggle" type="button" id="Category" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="true">
+        全部
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="Category">
+        <li><a href="#">.....</a></li>
+        <li role="separator" class="divider"></li>
+        <li><a href="#">.....</a></li>
+        <li role="separator" class="divider"></li>
+        <li><a href="#">.....</a></li>
+        <li role="separator" class="divider"></li>
+        <li><a href="#">.....</a></li>
+      </ul>
+    </div>
+    <div class="col-lg-10">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="请输入闲置物品名称">
+        <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" id="btn-search">搜索</button>
+                    </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- item -->
+  <style>
+            #tb {
+                table-layout: fixed;
+            }
+            .goods {
+                height: 100%;
+            }
+        </style>
+  <table class="table table-bordered" id="tb" style="word-break:break-all; word-wrap:break-all; margin-top: 10px; border-color: black;">
+    <!-- <div class="container"> -->
+    <thead>
+    <tr>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>
+        <div class="goods">
+          <h5>物品名称</h5>
+          <hr>
+          <img src="img/default.png" alt="good1">
+          <hr>
+          <p>物品简介: Lorem ipsum dolor sit amet consectetur adipisicing elit. Est architecto illum tenetur eveniet aperiam vel, perferendis modi itaque sequi rem ducimus ipsam mollitia nemo aspernatur qui sint impedit. Aut, quia.</p>
+        </div>
+      </td>
+      <td>
+        <div class="goods">
+          <h5>物品名称</h5>
+          <hr>
+          <img src="img/default.png" alt="good1">
+          <hr>
+          <p>
+            物品简介
+          </p>
+        </div>
+      </td>
+      <td>
+        <div class="goods">
+          <h5>物品名称</h5>
+          <hr>
+          <img src="img/default.png" alt="good1">
+          <hr>
+          <p>
+            物品简介
+          </p>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="goods">
+          <h5>物品名称</h5>
+          <hr>
+          <img src="img/default.png" alt="good1">
+          <hr>
+          <p>物品简介: Lorem ipsum dolor sit amet consectetur adipisicing elit. Est architecto illum tenetur eveniet aperiam vel, perferendis modi itaque sequi rem ducimus ipsam mollitia nemo aspernatur qui sint impedit. Aut, quia.</p>
+        </div>
+      </td>
+
+      <td>
+        <div class="goods">
+          <h5>物品名称</h5>
+          <hr>
+          <img src="img/default.png" alt="good1">
+          <hr>
+          <p>
+            物品简介
+          </p>
+        </div>
+      </td>
+      <td>
+        <div class="goods">
+          <h5>物品名称</h5>
+          <hr>
+          <img src="img/default.png" alt="good1">
+          <hr>
+          <p>
+            物品简介
+          </p>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+    <!--  -->
+  </table>
+  <!-- item -->
+</div>
+</div>
+
+</body>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.UserMapper">
+
+<!--    <resultMap id="BaseResultMap" type="com.example.demo.entity.User">-->
+<!--        <result column="uid" jdbcType="CHAR" property="id" />-->
+<!--        <result column="nickname" jdbcType="VARCHAR" property="userName" />-->
+<!--        <result column="password" jdbcType="VARCHAR" property="passWord" />-->
+<!--        <result column="accountStatus" jdbcType="INTEGER" property="realName" />-->
+<!--    </resultMap>-->
+
+<!--    <select id="getUser" resultType="com.example.demo.entity.User">-->
+<!--        select * from user where id = #{id}-->
+<!--    </select>-->
+
+</mapper>

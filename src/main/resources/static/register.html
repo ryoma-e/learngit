@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Register</title>
+</head>
+
+<body>
+  <h1>Register Page</h1>
+  <div>
+    <form action="/user/register" method="POST">
+      <table>
+        <tr>
+          <th>nickname</th>
+          <td><input type="text" name="nickname"></td>
+        </tr>
+        <tr>
+          <th>password</th>
+          <td><input type="password" name="password"></td>
+        </tr>
+        <tr>
+          <th>phoneNo</th>
+          <td><input type="text" name="phoneNo" pattern="1[0-9]{10}"></td>
+        </tr>
+        <tr>
+          <th>real name</th>
+          <td><input type="text" name="userName"></td>
+        </tr>
+        <tr>
+          <th>SchoolCardID</th>
+          <td><input type="text" name="schoolCardID"></td>
+        </tr>
+      </table>
+      <input type="submit" value="提交">
+    </form>
+  </div>
+</body>
+
+</html>

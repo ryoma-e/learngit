@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="https://cdn.jsdelivr.net/npm/@bootcss/v3.bootcss.com@1.0.20/favicon.ico">
+  <link rel="canonical" href="https://getbootstrap.com/docs/3.4/examples/signin/">
+
+  <title>Sign in Template for Bootstrap</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/@bootcss/v3.bootcss.com@1.0.20/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  <link href="https://cdn.jsdelivr.net/npm/@bootcss/v3.bootcss.com@1.0.20/assets/css/ie10-viewport-bug-workaround.css"
+        rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="https://cdn.jsdelivr.net/npm/@bootcss/v3.bootcss.com@1.0.20/examples/signin/signin.css" rel="stylesheet">
+
+  <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+  <!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/@bootcss/v3.bootcss.com@1.0.20/assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+  <script src="https://cdn.jsdelivr.net/npm/@bootcss/v3.bootcss.com@1.0.20/assets/js/ie-emulation-modes-warning.js"></script>
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+
+<div class="container">
+
+  <form class="form-signin" action="/user/register" method="POST">
+    <h2 class="form-signin-heading text-center">注册帐号</h2>
+    <label for="inputNickname" class="sr-only">昵称</label>
+    <input type="text" name="nickname" id="inputNickname" class="form-control" placeholder="昵称" required autofocus>
+
+    <label for="inputName" class="sr-only">姓名</label>
+    <input type="text" name="userName" id="inputName" class="form-control" placeholder="姓名" required autofocus>
+
+    <label for="inputSchoolCardId" class="sr-only">校园卡号</label>
+    <input type="text" name="schoolCardID" id="inputSchoolCardId" class="form-control" placeholder="校园卡号" required autofocus>
+
+    <label for="inputPhone" class="sr-only">手机号码</label>
+    <input type="text" name="phoneNo" id="inputPhone" class="form-control" placeholder="电话号码" required autofocus>
+
+    <label for="inputWeChat" class="sr-only">微信号</label>
+    <input type="text" name="wechatID" id="inputWeChat" class="form-control" placeholder="微信号" autofocus>
+
+    <label for="inputEmail" class="sr-only">邮箱</label>
+    <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" autofocus>
+
+    <label for="inputPassword" class="sr-only">密码</label>
+    <input type="password" id="inputPassword" class="form-control" placeholder="密码" required>
+
+    <label for="inputPasswordAgain" class="sr-only">再次输入确认</label>
+    <input type="password" name="password" id="inputPasswordAgain" class="form-control" placeholder="再次输入确认" onkeyup="checkpassword()"
+           required><span id="msg-pwd"></span>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" name="userRule" value="remember-me" checked required>我已阅读并同意《<a href="#">用户协议</a>》
+      </label>
+    </div>
+
+    <button class="btn btn-lg btn-primary btn-block" id="btn-register" type="submit">注册</button>
+  </form>
+</div> <!-- /container -->
+
+
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="https://cdn.jsdelivr.net/npm/@bootcss/v3.bootcss.com@1.0.20/assets/js/ie10-viewport-bug-workaround.js"></script>
+<script src="js/jquery-3.2.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+  function checkpassword() {
+    var password = document.getElementById("inputPassword").value;
+    var repassword = document.getElementById("inputPasswordAgain").value;
+
+    if (password == repassword) {
+      document.getElementById("msg-pwd").innerHTML = "<br><font color='green'>两次密码输入一致</font>";
+      document.getElementById("btn-register").disabled = false;
+
+    } else {
+      document.getElementById("msg-pwd").innerHTML = "<br><font color='red'>两次密码输入不一致!</font>";
+      document.getElementById("btn-register").disabled = true;
+    }
+  }
+</script>
+
+</body>
+
+</html>

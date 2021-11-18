@@ -4,11 +4,11 @@ import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
 import org.springframework.web.bind.annotation.*;
 
-@SpringBootApplication
-@RestController
+//@SpringBootApplication
+//@RestController
 public class DemoApplication {
 
-	@GetMapping("/")
+	//@GetMapping("/")
 	String home() {
 		return "Spring is here!";
 	}
