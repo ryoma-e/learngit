@@ -41,6 +41,7 @@ int main()
 	
 	int n;
 	int a[100];
+    int b = n + 1;
 	cin >> n;
 	for (int i = 0; i < n; i++)
 	{
