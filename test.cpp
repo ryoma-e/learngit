@@ -40,6 +40,7 @@ void print(){
     cout<<"change"<<endl;
 	cout<<"reconery"<<endl;
 	cout<<"merge"<<endl;
+	cout<<"change"<<endl;
 }
 int main()
 {
