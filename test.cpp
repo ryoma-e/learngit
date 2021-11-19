@@ -36,6 +36,9 @@ void insert_sort(int a[], int n) {
 		} 
 	}
 }
+void print(){
+    
+}
 int main()
 {
 	
