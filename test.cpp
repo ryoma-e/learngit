@@ -37,7 +37,7 @@ void insert_sort(int a[], int n) {
 	}
 }
 void print(){
-    
+    cout<<"change"<<endl;
 }
 int main()
 {
