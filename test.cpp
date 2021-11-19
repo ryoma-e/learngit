@@ -38,6 +38,8 @@ void insert_sort(int a[], int n) {
 }
 void print(){
     cout<<"change"<<endl;
+	cout<<"reconery"<<endl;
+	cout<<"merge"<<endl;
 }
 int main()
 {
