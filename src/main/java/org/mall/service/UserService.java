@@ -3,7 +3,7 @@ package org.mall.service;
 import org.mall.dto.UserLoginDTO;
 import org.mall.dto.UserOnlineDTO;
 import org.mall.dto.UserRegisterDTO;
-import org.mall.dto.convert.UserConvert2DTO;
+import org.mall.utils.DTOConverters;
 import org.mall.entity.User;
 import org.mall.mapper.UserMapper;
 import org.mall.utils.PasswordEncrypt;
@@ -12,85 +12,77 @@ import org.mall.utils.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
+import javax.servlet.http.HttpSession;
 
 @Service
 public class UserService {
    @Autowired
    UserMapper userMapper;
 
+   /**
+    * 用户注册处理
+    * @param userRegisterDTO 用户提交的注册信息(要求参数格式正确)
+    * @return 用户注册结果
+    */
    public ResultVO<Object> register(UserRegisterDTO userRegisterDTO) {
-      User user = User.builder()
-              .nickname(userRegisterDTO.getNickname())
-              .password(userRegisterDTO.getPassword())
-              .phoneNo(userRegisterDTO.getPhoneNo())
-              .userName(userRegisterDTO.getUserName())
-              .schoolCardID(userRegisterDTO.getSchoolCardID())
-              .wechatID(userRegisterDTO.getWechatID())
-              .email(userRegisterDTO.getEmail())
-              .build();
+      // 转换数据
+      User user = DTOConverters.convert2User(userRegisterDTO);
+
+      // 尝试录入注册信息
       int res = userMapper.addUser(user);
+      // 录入失败
       if (res != 1) {
+         // TODO: 解决各种问题, 包括TooManyResultsException phoneNo冲突
          return new ResultVO<>(ResultCode.ERROR, null);
       }
+
+      // 录入成功, 获取用户信息(uid是数据库触发器在用户注册信息插入时生成的)
       user = userMapper.getUserByPhoneNo(user.getPhoneNo());
-      UserOnlineDTO userOnLineDTO = UserConvert2DTO.convert2UserOnlineDTO(user);
+
+      // 只提取需要的数据(uid, nickname, userImageUrl)并返回
+      UserOnlineDTO userOnLineDTO = DTOConverters.convert2UserOnlineDTO(user);
       return new ResultVO<>(userOnLineDTO);
    }
 
-   public UserOnlineDTO findUser(String phoneNo) {
-      User user = userMapper.getUserByPhoneNo(phoneNo);
-      if (user == null) return null;
-      return UserConvert2DTO.convert2UserOnlineDTO(user);
-   }
-
-   public boolean checkPassword(UserLoginDTO userLoginDTO) {
-      String password1 = userMapper.getPasswordByPhoneNo(userLoginDTO.getPhoneNo());
-      return password1 != null && password1.equals(PasswordEncrypt.encrypt(userLoginDTO.getPassword()));
-   }
-
    /**
-    * nickname: 60个字节以内
-    * password: 32位以内(ASCII)
-    * phoneNo: 11个数字(1开头)
-    * schoolCardID: 6位数字
-    * userName: 60个字节以内
-    * wechatID: 20个字节以内
-    * email: 60个字节以内
-    *
-    * accountStatus: 默认为 0x1 待审核帐号
-    * uid: 在插入时通过数据库的触发器自动造成
+    * 用户登录处理
+    * @param userLoginDTO 用户提交的登录信息(要求参数格式正确)
+    * @param httpSession 用户设置
+    * @return 用户登录结果
     */
-   public boolean register(User user) {
-      String nickname = user.getNickname();
-      if (nickname == null || nickname.getBytes(StandardCharsets.UTF_8).length > 30) return false;
+   public ResultVO<Object> login(UserLoginDTO userLoginDTO, HttpSession httpSession) {
+      // 校验用户信息是否存在
+      User user = userMapper.getUserByPhoneNo(userLoginDTO.getPhoneNo());
+      if (user == null) { // 用户不存在
+         return new ResultVO<>(ResultCode.USER_NOT_EXIST, null);
+      }
 
-      String password = user.getPassword();
-      // 任何非空白字符或空格
-      if (password == null || !password.matches("[ \\S]{6,32}")) return false;
+      // 校验用户密码是否正确
+      String userPassword = user.getPassword();
+      if (userPassword == null ||
+              !userPassword.equals(PasswordEncrypt.encrypt(userLoginDTO.getPassword()))) {
+         return new ResultVO<>(ResultCode.USER_LOGIN_FAILED, null);
+      }
 
-      String phoneNo = user.getPhoneNo();
-      if (phoneNo == null || !phoneNo.matches("1[0-9]{10}")) return false;
+      // 提取需要的信息, 并记录登录状态
+      UserOnlineDTO userOnlineDTO = DTOConverters.convert2UserOnlineDTO(user);
+      httpSession.setAttribute("user_online", userOnlineDTO);
 
-      String schoolCardID = user.getSchoolCardID();
-      if (schoolCardID == null || !schoolCardID.matches("[0-9]{6}")) return false;
-
-      String userName = user.getUserName();
-      if (userName == null || !(userName.getBytes().length < 60)) return false;
-
-      // 密码加密
-      user.setPassword(PasswordEncrypt.encrypt(password));
-
-      int res = userMapper.addUser(user);
-      return res == 1;
+      return new ResultVO<>(userOnlineDTO);
    }
 
-   public boolean checkPassword(String phoneNo, String password) {
-      String password1 = userMapper.getPasswordByPhoneNo(phoneNo);
-      return password1 != null && password1.equals(PasswordEncrypt.encrypt(password));
-   }
+//   public UserOnlineDTO findUser(String phoneNo) {
+//      User user = userMapper.getUserByPhoneNo(phoneNo);
+//      if (user == null) return null;
+//      return DTOConverters.convert2UserOnlineDTO(user);
+//   }
 
-   public User getUserByPhoneNo(String phoneNo) {
-      return userMapper.getUserByPhoneNo(phoneNo);
-   }
+//   public boolean checkPassword(UserLoginDTO userLoginDTO) {
+//      String password1 = userMapper.getPasswordByPhoneNo(userLoginDTO.getPhoneNo());
+//      return password1 != null && password1.equals(PasswordEncrypt.encrypt(userLoginDTO.getPassword()));
+//   }
+
+//   public User getUserByPhoneNo(String phoneNo) {
+//      return userMapper.getUserByPhoneNo(phoneNo);
+//   }
 }

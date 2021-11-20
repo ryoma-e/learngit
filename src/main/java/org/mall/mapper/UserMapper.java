@@ -26,10 +26,6 @@ public interface UserMapper {
    })
    List<User> getAllUsers();
 
-   @Select("SELECT password FROM users WHERE phoneNo=#{phoneNo}")
-   @Result(property = "password", column = "password", jdbcType = JdbcType.CHAR)
-   String getPasswordByPhoneNo(String phoneNo);
-
    @Select("SELECT uid, nickname, password, accountStatus, userImageUrl, phoneNo, userName, schoolCardID, gender, wechatID, email, registerTime FROM users WHERE uid=#{uid}")
    @ResultMap(value = "userMap")
    User getUserByUid(String uid);
@@ -40,9 +36,14 @@ public interface UserMapper {
 
    @Insert("INSERT INTO users (nickname, password, phoneNo, schoolCardID, userName, wechatID, email)" +
            " VALUES(#{nickname}, #{password}, #{phoneNo}, #{schoolCardID}, #{userName}, #{wechatID}, #{email})")
-   // @Options(keyProperty = "uid", useGeneratedKeys = true)
    int addUser(User user);
 
-   @Delete("DELETE FROM users WHERE uid=#{uid}")
-   int delUserById(String uid);
+//   @Options(keyProperty = "uid", useGeneratedKeys = true)
+
+//   @Select("SELECT password FROM users WHERE phoneNo=#{phoneNo}")
+//   @Result(property = "password", column = "password", jdbcType = JdbcType.CHAR)
+//   String getPasswordByPhoneNo(String phoneNo);
+
+//   @Delete("DELETE FROM users WHERE uid=#{uid}")
+//   int deleteUserByUid(String uid);
 }

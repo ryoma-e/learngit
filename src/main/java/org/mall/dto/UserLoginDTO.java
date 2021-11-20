@@ -1,12 +1,22 @@
 package org.mall.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+/**
+ * 用于接收用户登录信息
+ *
+ * @author xuwenbo
+ */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserLoginDTO {
    @NotNull(message = "手机号码不能为空")
    private String phoneNo;

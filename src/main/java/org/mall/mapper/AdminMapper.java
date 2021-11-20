@@ -6,6 +6,9 @@ import org.mall.entity.User;
 
 import java.util.List;
 
+/**
+ *
+ */
 public interface AdminMapper extends UserMapper {
    @Update("UPDATE users SET accountStatus=#{status} WHERE uid=#{uid}")
    int updateUserStatus(String uid, int status);
