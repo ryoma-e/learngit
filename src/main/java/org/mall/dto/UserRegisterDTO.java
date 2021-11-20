@@ -9,12 +9,16 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
+/**
+ * 用于接收用户注册信息
+ *
+ * @author xu wenbo
+ */
 @Data
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor // 要有构造函数
 public class UserRegisterDTO {
    @NotNull(message = "昵称不能为空")
    private String nickname;
@@ -33,7 +37,6 @@ public class UserRegisterDTO {
    @Pattern(regexp = "[0-9]{6}", message = "校园卡号要求是6位数字")
    private String schoolCardID;
 
-   //   @Pattern(regexp = "[ \\S]{6,20}", message = "微信号为6-20位字符")
    @Length(max = 20, message = "微信号为6-20位字符")
    private String wechatID;
 
